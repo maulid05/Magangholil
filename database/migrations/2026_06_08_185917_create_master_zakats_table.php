@@ -13,6 +13,26 @@ return new class extends Migration
     {
         Schema::create('master_zakats', function (Blueprint $table) {
             $table->id();
+
+            $table->foreignId('id_jenis_zakat')
+                ->constrained('jenis_zakats')
+                ->cascadeOnDelete();
+
+            $table->foreignId('id_pemberi')
+                ->constrained('users')
+                ->cascadeOnDelete();
+
+            $table->foreignId('id_penerima')
+                ->nullable()
+                ->constrained('users')
+                ->nullOnDelete();
+
+            $table->enum('status', [
+                'Menunggu',
+                'Diterima',
+                'Disalurkan'
+            ])->default('Menunggu');
+
             $table->timestamps();
         });
     }

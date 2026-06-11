@@ -9,7 +9,7 @@
 
     <div class="card shadow">
         <div class="card-header">
-            <h5 class="mb-0">Form Tambah User</h5>
+            <h5 class="mb-0">Form Edit User</h5>
         </div>
 
         <div class="card-body">
@@ -71,7 +71,10 @@
                         <label for="" class="form-label">Role</label>
                         
                         <select name="role" id="" class="form-control mb-4">
-                            <option value=""></option>
+                            <option value="{{ $user->roles->first()?->id }}">{{ $user->roles->first()?->name }}</option>
+                            @foreach ($roles as $role)
+                            <option value="{{ $role->id }}">{{ $role->name }}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div class="mb-3 col-md-6">

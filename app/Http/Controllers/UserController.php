@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\{User, Nav};
+use App\Models\{User, Nav, Role, RoleUser};
 
 class UserController extends Controller
 {
@@ -14,7 +14,7 @@ class UserController extends Controller
     {
         $nav = Nav::All();
 
-        $users = User::All();
+        $users = User::with('roles')->get();
 
         return view('user.index', compact('nav', 'users'));
     }
@@ -26,7 +26,9 @@ class UserController extends Controller
     {
         $nav = Nav::All();
 
-        return view('user.create', compact('nav'));
+        $roles = Role::All();
+
+        return view('user.create', compact('nav', 'roles'));
     }
 
     /**
@@ -41,7 +43,7 @@ class UserController extends Controller
             'password',
         ]);
 
-        User::create([
+        $new_user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => $request->password,
@@ -50,6 +52,12 @@ class UserController extends Controller
             'birth_date' => $request->birth_date,
             'phone' => $request->phone,
             'address' => $request->address
+        ]);
+
+        //dd($now_user);
+        RoleUser::create([
+            'id_User' => $new_user->id,
+            'id_Role' => $request->role
         ]);
 
         return redirect()->route('user.index');
@@ -70,9 +78,11 @@ class UserController extends Controller
     {
         $nav = Nav::All();
 
-        $user = User::where('id', $id)->first();
+        $user = User::where('id', $id)->with('roles')->first();
 
-        return view('user.edit', compact('nav', 'user'));
+        $roles = Role::All();
+
+        return view('user.edit', compact('nav', 'user', 'roles'));
     }
 
     /**
@@ -93,7 +103,24 @@ class UserController extends Controller
             'address' => $request->address
         ]);
 
-        return redirect()->route('user.index')->with('success', 'berhasil di update');
+        $role_user = RoleUSer::where('id_User', $user->id)->first();
+        if ($role_user && $request->role != null) {
+            $role_user->update([
+                'id_User' => $id,
+                'id_Role' => $request->role
+            ]);
+        }elseif($request->role != null){
+            RoleUser::create([
+            'id_User' => $user->id,
+            'id_Role' => $request->role
+        ]);
+        }
+
+        if ($request->role != null) {
+            return redirect()->route('user.index')->with('success', 'berhasil di update');
+        }else{
+            return redirect()->back()->with('success', 'Berhasil disimpan');
+        }
     }
 
     /**

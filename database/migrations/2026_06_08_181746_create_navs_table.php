@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('navs', function (Blueprint $table) {
             $table->id();
+            $table->String('name');
+            $table->String('route');    
             $table->timestamps();
         });
     }

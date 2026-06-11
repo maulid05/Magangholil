@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\RolePermision;
-use App\Http\Requests\StoreRolePermisionRequest;
-use App\Http\Requests\UpdateRolePermisionRequest;
+use Illuminate\Http\Request;
+use App\Models\{
+    RolePermision,
+    Role,
+    Permision,
+    Nav
+};
 
 class RolePermisionController extends Controller
 {
@@ -13,7 +17,17 @@ class RolePermisionController extends Controller
      */
     public function index()
     {
-        //
+        $nav = Nav::all();
+
+        $rolePermisions = RolePermision::with([
+            'role',
+            'permision'
+        ])->get();
+
+        return view('role-permision.index', compact(
+            'nav',
+            'rolePermisions'
+        ));
     }
 
     /**
@@ -21,15 +35,37 @@ class RolePermisionController extends Controller
      */
     public function create()
     {
-        //
+        $nav = Nav::all();
+
+        $roles = Role::all();
+
+        $permisions = Permision::all();
+
+        return view('role-permision.create', compact(
+            'nav',
+            'roles',
+            'permisions'
+        ));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreRolePermisionRequest $request)
+    public function store(Request $request)
     {
-        //
+        $request->validate([
+            'id_role' => 'required|exists:roles,id',
+            'id_permision' => 'required|exists:permisions,id',
+        ]);
+
+        RolePermision::create([
+            'id_role' => $request->id_role,
+            'id_permision' => $request->id_permision,
+        ]);
+
+        return redirect()
+            ->route('role-permision.index')
+            ->with('success', 'Role Permission berhasil ditambahkan.');
     }
 
     /**
@@ -37,7 +73,9 @@ class RolePermisionController extends Controller
      */
     public function show(RolePermision $rolePermision)
     {
-        //
+        return view('role-permision.show', compact(
+            'rolePermision'
+        ));
     }
 
     /**
@@ -45,15 +83,40 @@ class RolePermisionController extends Controller
      */
     public function edit(RolePermision $rolePermision)
     {
-        //
+        $nav = Nav::all();
+
+        $roles = Role::all();
+
+        $permisions = Permision::all();
+
+        return view('role-permision.edit', compact(
+            'nav',
+            'rolePermision',
+            'roles',
+            'permisions'
+        ));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateRolePermisionRequest $request, RolePermision $rolePermision)
-    {
-        //
+    public function update(
+        Request $request,
+        RolePermision $rolePermision
+    ) {
+        $request->validate([
+            'id_role' => 'required|exists:roles,id',
+            'id_permision' => 'required|exists:permisions,id',
+        ]);
+
+        $rolePermision->update([
+            'id_role' => $request->id_role,
+            'id_permision' => $request->id_permision,
+        ]);
+
+        return redirect()
+            ->route('role-permision.index')
+            ->with('success', 'Role Permission berhasil diperbarui.');
     }
 
     /**
@@ -61,6 +124,10 @@ class RolePermisionController extends Controller
      */
     public function destroy(RolePermision $rolePermision)
     {
-        //
+        $rolePermision->delete();
+
+        return redirect()
+            ->route('role-permision.index')
+            ->with('success', 'Role Permission berhasil dihapus.');
     }
 }

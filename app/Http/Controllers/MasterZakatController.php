@@ -2,65 +2,111 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\MasterZakat;
-use App\Http\Requests\StoreMasterZakatRequest;
-use App\Http\Requests\UpdateMasterZakatRequest;
+use Illuminate\Http\Request;
+use App\Models\{
+    MasterZakat,
+    Nav,
+    JenisZakat,
+    User
+};
 
 class MasterZakatController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $nav = Nav::all();
+
+        $masterZakats = MasterZakat::with([
+            'jenisZakat',
+            'pemberi',
+            'penerima'
+        ])->get();
+
+        return view('zakat.index', compact(
+            'nav',
+            'masterZakats'
+        ));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        $nav = Nav::all();
+
+        $jenisZakats = JenisZakat::all();
+
+        $users = User::all();
+
+        return view('zakat.create', compact(
+            'nav',
+            'jenisZakats',
+            'users'
+        ));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreMasterZakatRequest $request)
+    public function store(Request $request)
     {
-        //
+        $request->validate([
+            'id_jenis_zakat' => 'required|exists:jenis_zakats,id',
+            'id_pemberi' => 'required|exists:users,id',
+            'id_penerima' => 'nullable|exists:users,id',
+            'status' => 'required'
+        ]);
+
+        MasterZakat::create([
+            'id_jenis_zakat' => $request->id_jenis_zakat,
+            'id_pemberi' => $request->id_pemberi,
+            'id_penerima' => $request->id_penerima,
+            'status' => $request->status,
+        ]);
+
+        return redirect()
+            ->route('zakat.index')
+            ->with('success', 'Data zakat berhasil ditambahkan.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(MasterZakat $masterZakat)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(MasterZakat $masterZakat)
     {
-        //
+        $nav = Nav::all();
+
+        $jenisZakats = JenisZakat::all();
+
+        $users = User::all();
+
+        return view('zakat.edit', compact(
+            'nav',
+            'masterZakat',
+            'jenisZakats',
+            'users'
+        ));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateMasterZakatRequest $request, MasterZakat $masterZakat)
+    public function update(Request $request, MasterZakat $masterZakat)
     {
-        //
+        $request->validate([
+            'id_jenis_zakat' => 'required|exists:jenis_zakats,id',
+            'id_pemberi' => 'required|exists:users,id',
+            'id_penerima' => 'nullable|exists:users,id',
+            'status' => 'required'
+        ]);
+
+        $masterZakat->update([
+            'id_jenis_zakat' => $request->id_jenis_zakat,
+            'id_pemberi' => $request->id_pemberi,
+            'id_penerima' => $request->id_penerima,
+            'status' => $request->status,
+        ]);
+
+        return redirect()
+            ->route('zakat.index')
+            ->with('success', 'Data zakat berhasil diperbarui.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(MasterZakat $masterZakat)
     {
-        //
+        $masterZakat->delete();
+
+        return redirect()
+            ->route('zakat.index')
+            ->with('success', 'Data zakat berhasil dihapus.');
     }
 }

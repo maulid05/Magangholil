@@ -31,6 +31,12 @@
             </div>
 
             <div class="card-body">
+                <div class="mb-3">
+                    <input type="text"
+                        id="searchInput"
+                        class="form-control"
+                        placeholder="Cari nama atau email user...">
+                </div>
 
                 <table class="table table-bordered table-hover table-striped">
                     <thead class="table-success">
@@ -38,17 +44,19 @@
                             <th width="5%">No</th>
                             <th>Nama</th>
                             <th>Email</th>
+                            <th>Role</th>
                             <th>Dibuat</th>
                             <th width="20%">Aksi</th>
                         </tr>
                     </thead>
 
-                    <tbody>
+                    <tbody id="userTable" >
                     @forelse($users as $index => $user)
                         <tr>
                             <td>{{ $index + 1 }}</td>
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
+                            <td>{{ $user->roles->first()?->name }}</td>
                             <td>{{ $user->created_at->format('d-m-Y') }}</td>
 
                             <td>
@@ -88,4 +96,30 @@
         </div>
 
     </div>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        const searchInput = document.getElementById('searchInput');
+        const rows = document.querySelectorAll('#userTable tr');
+
+        searchInput.addEventListener('keyup', function () {
+
+            let keyword = this.value.toLowerCase();
+
+            rows.forEach(function(row) {
+
+                let text = row.textContent.toLowerCase();
+
+                if (text.includes(keyword)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+
+            });
+
+        });
+
+    });
+    </script>
 </x-app-layout>

@@ -94,7 +94,9 @@
                         <label for="" class="form-label">Role</label>
                         
                         <select name="role" id="" class="form-control mb-4">
-                            <option value=""></option>
+                            @foreach ($roles as $role)
+                            <option value="{{ $role->id }}">{{ $role->name }}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div class="mb-3 col-md-6">

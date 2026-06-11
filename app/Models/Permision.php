@@ -2,11 +2,20 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Permision extends Model
 {
-    /** @use HasFactory<\Database\Factories\PermisionFactory> */
-    use HasFactory;
+    protected $fillable = [
+        'name',
+        'route'
+    ];
+
+    public function rolePermisions()
+    {
+        return $this->hasMany(
+            RolePermision::class,
+            'id_permision'
+        );
+    }
 }

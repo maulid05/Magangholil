@@ -21,10 +21,10 @@
                     </div>
                 </div>
             </div>
-
+            @if (Auth::user()->roles->first()->id == 1)
             <!-- Statistik -->
             <div class="row g-4">
-
+                
                 <div class="col-md-4">
                     <div class="card bg-success text-white shadow h-100">
                         <div class="card-body text-center">
@@ -34,26 +34,65 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <div class="col-md-4">
                     <div class="card bg-success text-white shadow h-100">
                         <div class="card-body text-center">
                             <h5>Role</h5>
                             <h2>{{ $role }}</h2>
+                            <a href="{{ route('roles.index') }}" class="btn btn-success text-white">Lihat Detail</a>
                         </div>
                     </div>
                 </div>
-
+                
                 <div class="col-md-4">
                     <div class="card bg-success text-white shadow h-100">
                         <div class="card-body text-center">
-                            <h5></h5>
-                            <h2></h2>
+                            <h5>Total Zakat</h5>
+                            <h2>{{ $totalzakat }}</h2>
+                            <a href="{{ route('zakat.index') }}" class="btn btn-success text-white">Lihat Detail</a>
                         </div>
                     </div>
                 </div>
-
             </div>
+            @elseif (Auth::user()->roles->first()->id != 1)
+            <div class="row g-4" >
+                <div class="col-md-4">
+                        <div class="card bg-success text-white shadow h-100">
+                            <div class="card-body text-center">
+                                <h5></h5>
+                                <h2></h2>
+                                <a href="#" class="btn btn-success text-white">Lihat Detail</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card bg-success text-white shadow h-100">
+                            <div class="card-body text-center">
+                                <h5></h5>
+                                <h2></h2>
+                                <a href="#" class="btn btn-success text-white">Lihat Detail</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card bg-success text-white shadow h-100">
+                            <div class="card-body text-center">
+                                <h5></h5>
+                                <h2></h2>
+                                <a href="#" class="btn btn-success text-white">Lihat Detail</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                
+            </div>
+            @endif
+
 
         </div>
     </div>

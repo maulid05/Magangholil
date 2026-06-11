@@ -18,7 +18,7 @@ class DashboardController extends Controller
         $usercount = User::count();
         $role = Role::count();
         $totalzakat = MasterZakat::count();
-        return view('dashboard', compact('usercount', 'nav', 'role', ));
+        return view('dashboard', compact('usercount', 'nav', 'role', 'totalzakat'));
     }
 
     /**

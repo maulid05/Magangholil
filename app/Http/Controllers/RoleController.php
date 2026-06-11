@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Role;
+use App\Models\{Role, Nav};
+use Illuminate\Http\Request;
 use App\Http\Requests\StoreRoleRequest;
 use App\Http\Requests\UpdateRoleRequest;
 
@@ -13,7 +14,11 @@ class RoleController extends Controller
      */
     public function index()
     {
-        //
+        $nav = Nav::All();
+
+        $roles = Role::All();
+
+        return view('role.index', compact('nav', 'roles'));
     }
 
     /**
@@ -21,15 +26,22 @@ class RoleController extends Controller
      */
     public function create()
     {
-        //
+        $nav = Nav::All();
+
+        return view('role.create', compact('nav'));
+        
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreRoleRequest $request)
+    public function store(Request $request)
     {
-        //
+        Role::create([
+            'name' => $request->name
+        ]);
+
+        return redirect()->route('roles.index')->with('success', 'Berhasil Di Tambahkan ');
     }
 
     /**
@@ -43,24 +55,37 @@ class RoleController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Role $role)
+    public function edit(string $id)
     {
-        //
+        $nav = Nav::All();
+
+        $roles = Role::where('id', $id)->first();
+
+        return view('role.edit', compact('nav', 'roles'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateRoleRequest $request, Role $role)
+    public function update(Request $request, string $id)
     {
-        //
+        $roles = Role::where('id', $id)->first();
+
+        $roles->update([
+            'name' => $request->name
+        ]);
+
+        return redirect()->route('roles.index')->with('success', 'Berhasil Di Ubah');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Role $role)
-    {
-        //
+    public function destroy(string $id)
+    {                
+        $roles = Role::where('id', $id)->first();
+        $roles->delete();
+
+        return redirect()->route('roles.index')->with('success', 'Berhasil Di Hapus');
     }
 }
