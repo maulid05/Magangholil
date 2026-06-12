@@ -33,9 +33,11 @@ class JenisZakatController extends Controller
 
     public function store(Request $request)
     {
+        //dd($request);
         $request->validate([
             'name' => 'required',
             'deskripsi_singkat' => 'required',
+            'id_petugas' => 'required',
             'wallet' => 'required',
             'gambar' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048'
         ]);
@@ -50,6 +52,7 @@ class JenisZakatController extends Controller
 
         JenisZakat::create([
             'name' => $request->name,
+            'id_petugas' => $request->id_petugas,
             'deskripsi_singkat' => $request->deskripsi_singkat,
             'wallet' => $request->wallet,
             'gambar' => $gambar

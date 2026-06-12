@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\{User, Nav, Role, RolePermision, MasterZakat};
+use App\Models\{User, Nav, Role, RolePermision, MasterZakat, JenisZakat};
 
 class DashboardController extends Controller
 {
@@ -14,11 +14,11 @@ class DashboardController extends Controller
     public function index()
     {
         $nav = Nav::All();
-
+        $jenisZakats = JenisZakat::All();
         $usercount = User::count();
         $role = Role::count();
         $totalzakat = MasterZakat::count();
-        return view('dashboard', compact('usercount', 'nav', 'role', 'totalzakat'));
+        return view('dashboard', compact('usercount', 'nav', 'role', 'totalzakat', 'jenisZakats'));
     }
 
     /**

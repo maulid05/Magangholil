@@ -28,16 +28,19 @@ class MasterZakatController extends Controller
         ));
     }
 
-    public function create()
+    public function create(string $id)
     {
         $nav = Nav::all();
 
-        $jenisZakats = JenisZakat::all();
+        $jenisZakats = JenisZakat::where('id', $id)->first();
 
         $users = User::all();
 
+        $masterZakat = MasterZakat::all();
+
         return view('zakat.create', compact(
             'nav',
+            'masterZakat',
             'jenisZakats',
             'users'
         ));
@@ -45,6 +48,7 @@ class MasterZakatController extends Controller
 
     public function store(Request $request)
     {
+        //dd($request);
         $request->validate([
             'id_jenis_zakat' => 'required|exists:jenis_zakats,id',
             'id_pemberi' => 'required|exists:users,id',
@@ -60,17 +64,37 @@ class MasterZakatController extends Controller
         ]);
 
         return redirect()
-            ->route('zakat.index')
+            ->route('dashboard')
             ->with('success', 'Data zakat berhasil ditambahkan.');
     }
-
-    public function edit(MasterZakat $masterZakat)
+    public function show(string $id)
     {
+        $nav = Nav::all();
+
+        $masterZakat = JenisZakat::with('petugas')
+            ->where('id',$id)->first();
+
+        $users = User::all();
+
+        $jenisZakats = MasterZakat::all();
+
+        return view('zakat.show', compact(
+            'nav',
+            'users',
+            'masterZakat',
+            'jenisZakats'
+        ));
+    }
+    public function edit(string $id)
+    {
+
         $nav = Nav::all();
 
         $jenisZakats = JenisZakat::all();
 
         $users = User::all();
+
+        $masterZakat = MasterZakat::where('id', $id)->first();
 
         return view('zakat.edit', compact(
             'nav',
@@ -91,7 +115,7 @@ class MasterZakatController extends Controller
 
         $masterZakat->update([
             'id_jenis_zakat' => $request->id_jenis_zakat,
-            'id_pemberi' => $request->id_pemberi,
+            'id_pemberi' => Auth::user()->id,
             'id_penerima' => $request->id_penerima,
             'status' => $request->status,
         ]);

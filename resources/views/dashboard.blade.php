@@ -55,7 +55,7 @@
                     </div>
                 </div>
             </div>
-            @elseif (Auth::user()->roles->first()->id != 1)
+            @elseif (Auth::user()->roles->first()->id == 3)
             <div class="row g-4" >
                 <div class="col-md-4">
                         <div class="card bg-success text-white shadow h-100">
@@ -88,7 +88,69 @@
                     </div>
                 </div>
             </div>
-            <div>
+            @else
+            <style>
+            .zakat-card{
+                transition: .3s;
+                overflow:hidden;
+                border-radius:12px;
+            }
+
+            .zakat-card:hover{
+                transform:translateY(-5px);
+                box-shadow:0 10px 25px rgba(0,0,0,.25);
+            }
+
+            .zakat-card img{
+                height:220px;
+                object-fit:cover;
+            }
+
+            .zakat-overlay{
+                background:#1b2838;
+                color:white;
+            }
+            </style>
+
+            <div class="row g-4">
+            
+                @foreach($jenisZakats as $jenis)
+            
+                    <div class="col-lg-4 col-md-6">
+                    
+                        <div class="card zakat-card border-0">
+                        
+                            <img src="{{ asset('storage/' . $jenis->gambar) }}"
+                                alt="{{ $jenis->name }}">
+                        
+                            <div class="card-body zakat-overlay">
+                            
+                                <h5>{{ $jenis->name }}</h5>
+                            
+                                <p class="small">
+                                    {{ Str::limit($jenis->deskripsi_singkat, 100) }}
+                                </p>
+                            
+                                <div class="d-flex justify-content-between align-items-center">
+                                
+                                    <span class="badge bg-success">
+                                        Tersedia
+                                    </span>
+                                
+                                    <a href="{{ route('zakat.show', $jenis->id) }}"
+                                       class="btn btn-success">
+                                        Ajukan Zakat
+                                    </a>
+                                
+                                </div>
+                            
+                            </div>
+                        
+                        </div>
+                    
+                    </div>
+                
+                @endforeach
                 
             </div>
             @endif
