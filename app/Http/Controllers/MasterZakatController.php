@@ -15,13 +15,26 @@ class MasterZakatController extends Controller
     public function index()
     {
         $nav = Nav::all();
-
-        $masterZakats = MasterZakat::with([
+        if (Auth()->user()->roles->first()->id == 1) {
+            $masterZakats = MasterZakat::with([
             'jenisZakat',
             'pemberi',
             'penerima'
         ])->get();
 
+        }elseif(Auth()->user()->roles->first()->id == 3){
+            $masterZakats = MasterZakat::with([
+                'jenisZakat',
+                'pemberi',
+                'penerima'
+            ])->where('id_penerima', Auth()->user()->id)->get();
+        }elseif(Auth()->user()->roles->first()->id == 2){
+            $masterZakats = MasterZakat::with([
+                'jenisZakat',
+                'pemberi',
+                'penerima'
+            ])->where('id_pemberi', Auth()->user()->id)->get();
+        }
         return view('zakat.index', compact(
             'nav',
             'masterZakats'
@@ -104,8 +117,11 @@ class MasterZakatController extends Controller
         ));
     }
 
-    public function update(Request $request, MasterZakat $masterZakat)
+    public function update(Request $request, string $id)
     {
+        //dd($request);
+
+        $masterZakat =  MasterZakat::where('id', $id)->first();
         $request->validate([
             'id_jenis_zakat' => 'required|exists:jenis_zakats,id',
             'id_pemberi' => 'required|exists:users,id',
@@ -115,7 +131,7 @@ class MasterZakatController extends Controller
 
         $masterZakat->update([
             'id_jenis_zakat' => $request->id_jenis_zakat,
-            'id_pemberi' => Auth::user()->id,
+            'id_pemberi' => $request->id_pemberi,
             'id_penerima' => $request->id_penerima,
             'status' => $request->status,
         ]);

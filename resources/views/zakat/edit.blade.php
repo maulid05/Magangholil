@@ -31,9 +31,19 @@
                         name="id_penerima"
                         value="{{ $masterZakat->id_penerima }}">
 
+                    @if ($masterZakat->status == 'Menunggu')
                     <input type="hidden"
                         name="status"
-                        value="{{ $masterZakat->status }}">
+                        value="Diterima">
+                    @elseif ($masterZakat->status == 'Diterima')
+                    <input type="hidden"
+                        name="status"
+                        value="Disalurkan">
+                    @elseif ($masterZakat->status == 'Disalurkan')
+                    <input type="hidden"
+                        name="status"
+                        value="Disalurkan">
+                    @endif
 
                     <div class="mb-3">
                         <label class="form-label">
@@ -138,14 +148,29 @@
                         </label>
 
                     </div>
-
+                    @if ($masterZakat->status == 'Menunggu')
                     <button type="submit"
                         class="btn btn-primary">
 
-                        Update Zakat
+                        Terima Zakat
 
                     </button>
+                    @elseif ($masterZakat->status == 'Diterima')
+                    <button type="submit"
+                        class="btn btn-success">
 
+                        Salurkan Zakat
+
+                    </button>
+                    @elseif ($masterZakat->status == 'Disalurkan')
+                    <button type="submit"
+                        class="btn btn-primary">
+
+                        Selesai
+
+                    </button>
+                    @endif
+                    
                     <a href="{{ route('zakat.index') }}"
                         class="btn btn-secondary">
 
